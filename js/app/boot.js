@@ -1,7 +1,8 @@
 define([
     'jquery',
+    'underscore',
     'app/index'
-], function($, app) {
+], function($, _, app) {
 
     app.otherwise({
         redirectTo : 'home'

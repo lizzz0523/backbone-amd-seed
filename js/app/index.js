@@ -5,10 +5,6 @@ define([
 ], function($, _, b) {
 
     var Main = b.View.extend({
-            events : {
-                'click [data-nav]' : '_navigate'
-            },
-
             initialize : function(options) {
                 var self = this;
 
@@ -21,7 +17,7 @@ define([
                 var self = this,
                     app = self.app;
 
-                self.listenTo(app, 'route', self._highlight);
+                self.listenTo(app, 'route', self._active);
 
                 return self;
             },
@@ -46,16 +42,7 @@ define([
                 return self;
             },
 
-            _navigate : function(event) {
-                var self = this,
-                    name = $(event.currentTarget).data('nav');
-
-                event.stopPropagation();
-
-                self._highlight(name);
-            },
-
-            _highlight : function(name) {
+            _active : function(name) {
                 var self = this,
 
                     $nav = self.$nav,
@@ -100,17 +87,19 @@ define([
                 controllerUrl = config.controllerUrl;
 
                 if (templateUrl.indexOf('.html') !== templateUrl.length - 5) {
+                    // relative path
                     templateUrl = 'text!../' + templateUrl + '.html';
+                } else {
+                    // absolute path
+                    templateUrl = 'text!' + templateUrl;
                 }
 
                 self.route(path, name, function() {
-                    var args = Array.prototype.slice.call(arguments, 0);
-
                     require([templateUrl, controllerUrl], function(html, ctrl) {
                         self._render(html);
                         // wait for dom ready
                         _.defer(function() {
-                            self._apply(ctrl, args);
+                            self._apply(ctrl, arguments);
                         });
                     });
                 });
