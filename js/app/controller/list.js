@@ -1,26 +1,24 @@
 define([
     'jquery',
-    'underscore'
-], function($, _) {
+    'underscore',
+    'model/ListModel',
+    'view/ListView'
+], function($, _, ListModel, ListView) {
 
     return function() {
         var self = this,
 
-            $list = self.$('.list'),
-            
-            tmpl = [
-                '<% for(var i = 0; i < data.length; i++){ %>',
-                    '<li><%= data[i] %></li>',
-                '<% } %>'
-            ].join(''),
+            listElem = self.$('.list').get(0),
 
-            data = [
-                'liz',
-                'foo',
-                'bar'
-            ];
+            listModel = new ListModel(),
+            listView = new ListView({
+                el         : listElem,
+                collection : listModel
+            });
 
-        $list.html(_.template(tmpl, {variable: 'data'})(data));
+        listModel.fetch({reset : true});
+
+        return self;
     };
 
 });
